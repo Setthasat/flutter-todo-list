@@ -1,16 +1,12 @@
-# todolist_flutter
+# ToDo List Flutter 
+This is a ToDo List application that made with Flutter. 
 
-A new Flutter project.
+# Feature 
+ - Search ToDo
+ - Mark as Done (Check if a task is completed or not)
+ - Create ToDo
+ - Delete ToDo
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Note 
+I created this application on my first day of learning Flutter by following this tutorial:(https://www.youtube.com/watch?v=K4P5DZ9TRns).
+This is my very first project built with Flutter.
