@@ -8,5 +8,5 @@ This is a ToDo List application that made with Flutter.
  - Delete ToDo
 
 # Note 
-I created this application on my first day of learning Flutter by following this tutorial:(https://www.youtube.com/watch?v=K4P5DZ9TRns).
+I created this application on my first day of learning Flutter.
 This is my very first project built with Flutter.
