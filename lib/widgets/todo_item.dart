@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../model/todo.dart';
 import '../constants/color.dart';
 
-class ToDoItem extends StatelessWidget {
+class ToDoItem extends StatefulWidget {
   final ToDo todo;
-  final onToDoChanged;
-  final onDeleteItem;
+  final Function(ToDo) onToDoChanged;
+  final Function(String) onDeleteItem;
 
   const ToDoItem({
     Key? key,
@@ -16,48 +16,136 @@ class ToDoItem extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ToDoItem> createState() => _ToDoItemState();
+}
+
+class _ToDoItemState extends State<ToDoItem> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: ListTile(
-        onTap: () {
-          // print('Clicked on Todo Item.');
-          onToDoChanged(todo);
-        },
-        shape: RoundedRectangleBorder(
+    return ScaleTransition(
+      scale: _scaleAnimation,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: widget.todo.isDone
+                  ? Colors.black.withOpacity(0.05)
+                  : Colors.black.withOpacity(0.08),
+              offset: Offset(0, 4),
+              blurRadius: 15,
+              spreadRadius: 0,
+            ),
+          ],
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        tileColor: Colors.white,
-        leading: Icon(
-          todo.isDone ? Icons.check_box : Icons.check_box_outline_blank,
-          color: tdBlue,
-        ),
-        title: Text(
-          todo.todoText!,
-          style: TextStyle(
-            fontSize: 16,
-            color: tdBlack,
-            decoration: todo.isDone ? TextDecoration.lineThrough : null,
-          ),
-        ),
-        trailing: Container(
-          padding: EdgeInsets.all(0),
-          margin: EdgeInsets.symmetric(vertical: 12),
-          height: 35,
-          width: 35,
-          decoration: BoxDecoration(
-            color: tdRed,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: IconButton(
-            color: Colors.white,
-            iconSize: 18,
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              // print('Clicked on delete icon');
-              onDeleteItem(todo.id);
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () {
+              _controller.forward().then((_) => _controller.reverse());
+              widget.onToDoChanged(widget.todo);
             },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: widget.todo.isDone
+                          ? LinearGradient(
+                              colors: [tdBlue, Color(0xFF7C6FEE)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
+                          : null,
+                      border: widget.todo.isDone
+                          ? null
+                          : Border.all(
+                              color: tdGrey.withOpacity(0.3),
+                              width: 2,
+                            ),
+                    ),
+                    child: widget.todo.isDone
+                        ? Icon(
+                            Icons.check,
+                            size: 18,
+                            color: Colors.white,
+                          )
+                        : null,
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: Text(
+                      widget.todo.todoText!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: widget.todo.isDone
+                            ? tdGrey.withOpacity(0.5)
+                            : tdBlack,
+                        fontWeight: FontWeight.w500,
+                        decoration: widget.todo.isDone
+                            ? TextDecoration.lineThrough
+                            : null,
+                        decorationColor: tdGrey.withOpacity(0.5),
+                        decorationThickness: 2,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: tdRed.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {
+                          if (widget.todo.id != null) {
+                            widget.onDeleteItem(widget.todo.id!);
+                          }
+                        },
+                        child: Icon(
+                          Icons.delete_outline,
+                          color: tdRed,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
