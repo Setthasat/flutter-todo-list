@@ -1,6 +1,9 @@
 # ToDo List Flutter 
 This is a ToDo List application that made with Flutter. 
 
+## Screenshot
+![App Screenshot](assets/screenshot.png)
+
 # Feature 
  - Search ToDo
  - Mark as Done (Check if a task is completed or not)
